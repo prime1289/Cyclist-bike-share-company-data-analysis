@@ -1,0 +1,64 @@
+🔍Question 1:
+Table: `Transaction`
+Columns: `trans id`, `trans date`, `trans amount`
+📜 Task: Fetch the `id` and `date` for every month which has the highest transaction amount. *(Note: Multiple transactions can occur on a single day by one trans id.)*
+
+ANS- WITH TransCTE AS (
+    SELECT 
+        trans_id, 
+        SUM(trans_amount) AS total_transaction_amount, 
+        MONTH(trans_date) AS trans_month
+    FROM Transaction
+    GROUP BY trans_id, trans_month
+)
+SELECT trans_id, trans_date
+FROM Transaction
+WHERE (MONTH(trans_date), trans_id) IN (
+    SELECT trans_month, trans_id
+    FROM TransCTE
+    WHERE total_transaction_amount = (
+        SELECT MAX(total_transaction_amount)
+        FROM TransCTE
+    )
+);
+
+🔍Question 2:
+Table: `emp`
+Columns: `Emp_id`, `Emp_name`, `dob`
+📜 Task: Considering a company policy where employees aged 60 or more should retire, retrieve the list of employees who will be retiring in 2024.
+
+ANS-SELECT Emp_name
+FROM emp
+WHERE DATE_ADD(dob, INTERVAL 60 YEAR) < '2025-01-01';
+
+🔍Question 3:
+Given:
+Table A: 
+ids: 1, 2, 3, 4, 5, 6, 7, 8, 9, 19
+Table B: 
+ids: 1, 2, 3, 4, 5
+📜 Task: What would be the output for inner join, left join, right join, and full outer join between these tables?
+
+ANS- Inner Join:
+An inner join returns only the matching rows between the tables based on the specified condition.
+
+Output: 1, 2, 3, 4, 5 (common ids in both tables)
+
+Left Join:
+A left join returns all rows from the left table (Table A), and the matched rows from the right table (Table B). For unmatched rows in Table B, NULL values will be displayed.
+
+Output: 1, 2, 3, 4, 5, 6, 7, 8, 9, 19
+
+Right Join:
+A right join returns all rows from the right table (Table B), and the matched rows from the left table (Table A). For unmatched rows in Table A, NULL values will be displayed.
+
+Output: 1, 2, 3, 4, 5
+
+Full Outer Join:
+A full outer join returns all rows when there is a match in either the left or right table. If there is no match, NULL values will be displayed for the columns from the other table.
+
+Output: 1, 2, 3, 4, 5, 6, 7, 8, 9, 19 (all distinct ids from both tables)
+
+    
+     
+     
